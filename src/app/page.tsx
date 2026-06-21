@@ -1,13 +1,13 @@
 "use client";
-import styles from "./page.module.scss";
-import { useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
-import Preloader from "../components/Preloader";
-import Landing from "../components/Landing";
-import Projects from "../components/Projects";
-import Description from "../components/Description";
-import SlidingImages from "../components/SlidingImages";
+import { useEffect, useState } from "react";
+import ProjectsView from "@/components/ProjectsView";
 import Contact from "../components/Contact";
+import Description from "../components/Description";
+import Landing from "../components/Landing";
+import Preloader from "../components/Preloader";
+import SlidingImages from "../components/SlidingImages";
+import styles from "./page.module.scss";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -15,7 +15,7 @@ export default function Home() {
   useEffect(() => {
     (async () => {
       const LocomotiveScroll = (await import("locomotive-scroll")).default;
-      const locomotiveScroll = new LocomotiveScroll();
+      new LocomotiveScroll();
 
       setTimeout(() => {
         setIsLoading(false);
@@ -32,7 +32,7 @@ export default function Home() {
       </AnimatePresence>
       <Landing />
       <Description />
-      <Projects />
+      <ProjectsView />
       <SlidingImages />
       <Contact />
     </main>

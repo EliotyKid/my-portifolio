@@ -7,9 +7,10 @@ type ProjectProps = {
   index: number;
   title: string;
   manageModal: (active: boolean, index: number, x: number, y: number) => void;
+  category: string;
 };
 
-export default function Project({ index, title, manageModal }: ProjectProps) {
+export default function Project({ index, title, manageModal, category }: ProjectProps) {
   return (
     <div
       className={styles.project}
@@ -21,7 +22,7 @@ export default function Project({ index, title, manageModal }: ProjectProps) {
       }}
     >
       <h2>{title}</h2>
-      <p>Design & Development</p>
+      <p>{category}</p>
     </div>
   );
 }

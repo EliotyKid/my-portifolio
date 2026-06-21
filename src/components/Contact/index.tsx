@@ -4,6 +4,7 @@ import Rounded from "../../common/RoundedButton";
 import { useRef } from "react";
 import { useScroll, motion, useTransform, useSpring } from "framer-motion";
 import Magnetic from "../../common/Magnetic";
+import Link from "next/link";
 
 export default function index() {
   const container = useRef(null);
@@ -20,7 +21,7 @@ export default function index() {
         <div className={styles.title}>
           <span>
             <div className={styles.imageContainer}>
-              <Image fill={true} alt={"image"} src={`/images/background.jpg`} />
+              <Image fill={true} alt={"image"} src={`/images/eu.png`} />
             </div>
             <h2>Let's work</h2>
           </span>
@@ -45,18 +46,21 @@ export default function index() {
           </motion.svg>
         </div>
         <div className={styles.nav}>
-          <Rounded>
-            <p>info@dennissnellenberg.com</p>
-          </Rounded>
-          <Rounded>
-            <p>+31 6 27 84 74 30</p>
-          </Rounded>
+            <Rounded>
+              <p>info@dennissnellenberg.com</p>
+            </Rounded>
+            <Rounded
+              onClick={() => window.open("https://wa.me/5537998184858", "_blank")}
+            >
+              <p>+55 37 9 9818-4858</p>
+              {/* <a href="https://wa.me/379981814858">+55 37 9 9818-4858</a> */}
+            </Rounded>
         </div>
         <div className={styles.info}>
           <div>
             <span>
               <h3>Version</h3>
-              <p>2022 © Edition</p>
+              <p>2026 © Edition</p>
             </span>
             <span>
               <h3>Version</h3>

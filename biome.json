@@ -14,14 +14,24 @@
     "indentStyle": "space",
     "indentWidth": 2
   },
+  "javascript": {
+    "globals": [
+      "React",
+      "jsx",
+      "window",
+      "document",
+      "process",
+      "console"
+    ]
+  },
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
-    },
-    "domains": {
-      "next": "recommended",
-      "react": "recommended"
+      "recommended": true,
+      "correctness": {
+        "useExhaustiveDependencies": "warn"
+      },
+      "nursery": {}
     }
   },
   "assist": {

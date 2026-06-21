@@ -6,25 +6,8 @@ import { menuSlide } from "../animation";
 import Link from "./Link";
 import Curve from "./Curve";
 import Footer from "./Footer";
+import { navItems } from "./Data";
 
-const navItems = [
-  {
-    title: "Home",
-    href: "/",
-  },
-  {
-    title: "Work",
-    href: "/work",
-  },
-  {
-    title: "About",
-    href: "/about",
-  },
-  {
-    title: "Contact",
-    href: "/contact",
-  },
-];
 
 export default function index() {
   const pathname = usePathname();

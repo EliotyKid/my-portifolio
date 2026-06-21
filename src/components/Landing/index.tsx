@@ -48,7 +48,7 @@ export default function Home() {
       animate="enter"
       className={styles.landing}
     >
-      <Image src="/images/background.jpg" fill={true} alt="background" />
+      <Image src="/images/eu.png" fill={true} alt="background" />
       <div className={styles.sliderContainer}>
         <div ref={slider} className={styles.slider}>
           <p ref={firstText}>Freelance Game Developer -</p>

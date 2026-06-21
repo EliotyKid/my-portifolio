@@ -7,19 +7,8 @@ import { motion, Variants } from "framer-motion";
 import gsap from "gsap";
 import Image from "next/image";
 import Rounded from "../../common/RoundedButton";
+import {projects} from "@/Data/Projects"
 
-type ProjectType = {
-  title: string;
-  src: string;
-  color: string;
-};
-
-const projects: ProjectType[] = [
-  { title: "C2 Montreal", src: "c2montreal.png", color: "#000000" },
-  { title: "Office Studio", src: "officestudio.png", color: "#8C8C8C" },
-  { title: "Locomotive", src: "locomotive.png", color: "#EFE8D3" },
-  { title: "Silencio", src: "silencio.png", color: "#706D63" },
-];
 
 const scaleAnimation: Variants = {
   initial: { scale: 0, x: "-50%", y: "-50%" },
@@ -112,78 +101,101 @@ export default function Home() {
     setModal({ active, index });
   };
 
+  const gridContainerVariants: Variants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15, // Tempo entre o surgimento de cada card
+      },
+    },
+  };
+
+  // Variantes para cada Card do projeto
+  const cardVariants: Variants = {
+    hidden: { opacity: 0, y: 50 },
+    show: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 0.6, ease: [0.215, 0.610, 0.355, 1] } 
+    },
+  };
+
   return (
-    <main
-      onMouseMove={(e: React.MouseEvent<HTMLDivElement>) =>
-        moveItems(e.clientX, e.clientY)
-      }
-      className={styles.projects}
-    >
-      <div className={styles.body}>
-        {projects.map((project, i) => (
-          <Project
-            key={i}
-            index={i}
-            title={project.title}
-            manageModal={manageModal}
-          />
-        ))}
-      </div>
+    <>
+      <section
+        onMouseMove={(e: React.MouseEvent<HTMLDivElement>) =>
+          moveItems(e.clientX, e.clientY)
+        }
+        className={styles.projects}
+      >
+        <div className={styles.body}>
+          {projects.map((project, i) => (
+            <Project
+              key={i}
+              index={i}
+              title={project.title}
+              category={project.category}
+              manageModal={manageModal}
+            />
+          ))}
+        </div>
 
-      <Rounded>
-        <p>More work</p>
-      </Rounded>
+        <Rounded>
+          <p>More work</p>
+        </Rounded>
 
-      <>
-        <motion.div
-          ref={modalContainer}
-          variants={scaleAnimation}
-          initial="initial"
-          animate={active ? "enter" : "closed"}
-          className={styles.modalContainer}
-        >
-          <div
-            style={{ top: `${index * -100}%` }}
-            className={styles.modalSlider}
+        <>
+          <motion.div
+            ref={modalContainer}
+            variants={scaleAnimation}
+            initial="initial"
+            animate={active ? "enter" : "closed"}
+            className={styles.modalContainer}
           >
-            {projects.map((project, i) => {
-              const { src, color } = project;
-              return (
-                <div
-                  className={styles.modal}
-                  style={{ backgroundColor: color }}
-                  key={`modal_${i}`}
-                >
-                  <Image
-                    src={`/images/${src}`}
-                    width={300}
-                    height={0}
-                    alt="image"
-                  />
-                </div>
-              );
-            })}
-          </div>
-        </motion.div>
+            <div
+              style={{ top: `${index * -100}%` }}
+              className={styles.modalSlider}
+            >
+              {projects.map((project, i) => {
+                const { src, color } = project;
+                return (
+                  <div
+                    className={styles.modal}
+                    style={{ backgroundColor: color }}
+                    key={`modal_${i}`}
+                  >
+                    <Image
+                      src={`/images/${src}`}
+                      width={300}
+                      height={0}
+                      alt="image"
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
 
-        <motion.div
-          ref={cursor}
-          className={styles.cursor}
-          variants={scaleAnimation}
-          initial="initial"
-          animate={active ? "enter" : "closed"}
-        />
+          <motion.div
+            ref={cursor}
+            className={styles.cursor}
+            variants={scaleAnimation}
+            initial="initial"
+            animate={active ? "enter" : "closed"}
+          />
 
-        <motion.div
-          ref={cursorLabel}
-          className={styles.cursorLabel}
-          variants={scaleAnimation}
-          initial="initial"
-          animate={active ? "enter" : "closed"}
-        >
-          View
-        </motion.div>
-      </>
-    </main>
+          <motion.div
+            ref={cursorLabel}
+            className={styles.cursorLabel}
+            variants={scaleAnimation}
+            initial="initial"
+            animate={active ? "enter" : "closed"}
+          >
+            View
+          </motion.div>
+        </>
+      </section>
+    </>
   );
 }

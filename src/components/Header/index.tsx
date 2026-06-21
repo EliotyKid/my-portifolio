@@ -9,6 +9,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Rounded from "../../common/RoundedButton";
 import Magnetic from "../../common/Magnetic";
+import { navItems } from "./nav/Data";
+import Link from "./nav/Link"
 
 export default function Header() {
   const header = useRef<HTMLDivElement | null>(null);
@@ -58,12 +60,22 @@ export default function Header() {
 
           <div className={styles.name}>
             <p className={styles.codeBy}>Code by</p>
-            <p className={styles.dennis}>Dennis</p>
+            <p className={styles.dennis}>Elioty</p>
             <p className={styles.snellenberg}>Snellenberg</p>
           </div>
         </div>
 
         <div className={styles.nav}>
+          {/* {navItems.map((data, index) => {
+            return (
+              <Link
+                key={index}
+                data={{ ...data, index }}
+                isActive={selectedIndicator == data.href}
+                setSelectedIndicator={setSelectedIndicator}
+              ></Link>
+            );
+          })} */}
           <Magnetic>
             <div className={styles.el}>
               <a>Work</a>

@@ -4,6 +4,9 @@
   flex-direction: column;
   margin-top: 300px;
   padding: 0 100px;
+  z-index: 20;
+  background-color: white;
+  min-height: 80dvh;
 
   .header {
     width: 100%;
@@ -299,5 +302,10 @@
 
   .cursorLabel {
     background-color: transparent;
+  }
+
+  .blank {
+    height: 100px;
+    
   }
 }

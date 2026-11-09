@@ -5,7 +5,7 @@
     position: relative;
     margin-top: 200px;
     background-color: white;
-    z-index: 1;
+    z-index: 2;
     .slider{
         display: flex;
         position: relative;
@@ -27,6 +27,10 @@
                 }
             }
         }
+    }
+
+    .espacador{
+        height: 100px;
     }
     .circleContainer{
         background-color: red;

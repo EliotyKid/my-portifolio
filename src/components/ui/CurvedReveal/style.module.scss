@@ -1,0 +1,15 @@
+.curvedContainer {
+  position: relative;
+  overflow: clip;
+  background: var(--ink);
+}
+.svgCurve {
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 100%;
+  height: clamp(60px, 9vw, 120px);
+  z-index: 1;
+  fill: var(--paper);
+  pointer-events: none;
+}

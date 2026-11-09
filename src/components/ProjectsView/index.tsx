@@ -120,7 +120,7 @@ export default function ProjectsView() {
                 height="18"
                 viewBox="0 0 18 18"
                 fill="none"
-                aria-label="Grid view"
+                aria-hidden="true"
               >
                 <rect
                   x="1"
@@ -168,7 +168,7 @@ export default function ProjectsView() {
                 height="18"
                 viewBox="0 0 18 18"
                 fill="none"
-                aria-label="List view"
+                aria-hidden="true"
               >
                 <line
                   x1="2"
@@ -335,6 +335,7 @@ export default function ProjectsView() {
       >
         View
       </motion.div>
+      <div className={styles.blank} />
     </main>
   );
 }

@@ -7,7 +7,17 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!node_modules", "!.next", "!dist", "!build"]
+    "includes": [
+      "**",
+      "!node_modules",
+      "!.next",
+      "!dist",
+      "!build",
+      "!public/demos",
+      "!artifacts",
+      "!test-results",
+      "!playwright-report"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -15,14 +25,7 @@
     "indentWidth": 2
   },
   "javascript": {
-    "globals": [
-      "React",
-      "jsx",
-      "window",
-      "document",
-      "process",
-      "console"
-    ]
+    "globals": ["React", "jsx", "window", "document", "process", "console"]
   },
   "linter": {
     "enabled": true,
@@ -40,5 +43,21 @@
         "organizeImports": "on"
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "src/app/**/*.tsx",
+        "src/components/WorkListing/index.tsx",
+        "src/components/Projects/index.tsx"
+      ],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "useUniqueElementIds": "off"
+          }
+        }
+      }
+    }
+  ]
 }

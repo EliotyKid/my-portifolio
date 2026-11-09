@@ -1,33 +1,26 @@
-import React from "react";
-import { motion, type Variants } from "framer-motion";
+"use client";
+import { motion, useReducedMotion } from "framer-motion";
 import styles from "./styles.module.scss";
 
-export default function Index() {
-  const initialPath = `M100 0 L100 ${window.innerHeight} Q-100 ${window.innerHeight / 2} 100 0`;
-  const targetPath = `M100 0 L100 ${window.innerHeight} Q100 ${window.innerHeight / 2} 100 0`;
-
-  const curve: Variants = {
-    initial: {
-      d: initialPath,
-    },
-    enter: {
-      d: targetPath,
-      transition: { duration: 1, ease: [0.76, 0, 0.24, 1] },
-    },
-    exit: {
-      d: initialPath,
-      transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] },
-    },
-  };
-
+export default function Curve() {
+  const reduced = useReducedMotion();
+  const initialPath = "M100 0 L100 1000 Q-100 500 100 0";
+  const targetPath = "M100 0 L100 1000 Q100 500 100 0";
   return (
-    <svg className={styles.svgCurve}>
+    <svg
+      className={styles.svgCurve}
+      viewBox="0 0 100 1000"
+      preserveAspectRatio="none"
+      data-curve="menu"
+      aria-hidden="true"
+      focusable="false"
+    >
       <motion.path
-        variants={curve}
-        initial="initial"
-        animate="enter"
-        exit="exit"
-      ></motion.path>
+        initial={{ d: reduced ? targetPath : initialPath }}
+        animate={{ d: targetPath }}
+        exit={{ d: reduced ? targetPath : initialPath }}
+        transition={{ duration: reduced ? 0 : 0.8, ease: [0.76, 0, 0.24, 1] }}
+      />
     </svg>
   );
 }

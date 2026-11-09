@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1100" fill="none">
+<defs>
+ <pattern id="grid" width="55" height="55" patternUnits="userSpaceOnUse"><path d="M55 0H0V55" stroke="#c1c498" stroke-opacity=".18"/><path d="M11 0V55M22 0V55M33 0V55M44 0V55M0 11H55M0 22H55M0 33H55M0 44H55" stroke="#b8bf95" stroke-opacity=".055"/></pattern>
+ <linearGradient id="mat" x2="1" y2="1"><stop stop-color="#43513a"/><stop offset="1" stop-color="#222d1d"/></linearGradient>
+ <linearGradient id="pencil"><stop stop-color="#a78f59"/><stop offset=".5" stop-color="#d8c68c"/><stop offset="1" stop-color="#786232"/></linearGradient>
+ <linearGradient id="knife"><stop stop-color="#444840"/><stop offset=".4" stop-color="#a9ada0"/><stop offset=".55" stop-color="#63685e"/><stop offset="1" stop-color="#33372e"/></linearGradient>
+ <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".09"/></feComponentTransfer><feBlend in="SourceGraphic" mode="soft-light"/></filter>
+</defs>
+<rect width="1600" height="1100" fill="#20170e"/>
+<g transform="rotate(-13 950 500)">
+ <rect x="490" y="-150" width="1270" height="1450" rx="18" fill="url(#mat)"/>
+ <rect x="516" y="-125" width="1210" height="1390" fill="url(#grid)" stroke="#bec39b" stroke-opacity=".3"/>
+ <path d="M550 1000H1620M550 970H1620M550 940H1620" stroke="#b3bb8c" stroke-opacity=".15"/>
+ <g fill="#bac29c" opacity=".4" font-family="Arial" font-size="10"><text x="550" y="1017">10</text><text x="770" y="1017">15</text><text x="990" y="1017">20</text><text x="1210" y="1017">25</text><text x="1430" y="1017">30</text><text x="1550" y="110">CUTTING MAT / A2</text></g>
+ <g transform="rotate(22 1350 350)"><rect x="1335" y="140" width="19" height="400" rx="3" fill="url(#pencil)"/><path d="m1335 540 9.5 49 9.5-49" fill="#c5a171"/><path d="m1340 569 4.5 20 4.5-20" fill="#292a22"/><rect x="1335" y="140" width="19" height="28" fill="#434538"/><path d="M1341 175V530" stroke="#f7d995" stroke-opacity=".5"/></g>
+ <g transform="rotate(22 1430 400)"><rect x="1420" y="300" width="28" height="280" rx="11" fill="url(#knife)"/><path d="M1426 300v-93l16-30v123" fill="#c7c8b5"/><path d="M1421 332h26m-26 6h26m-26 6h26m-26 6h26m-26 6h26m-26 6h26m-26 6h26m-26 6h26" stroke="#2b3026" stroke-opacity=".65"/></g>
+ <path d="M1215 800v90a25 25 0 0 0 50 0V785a18 18 0 0 0-36 0v100a10 10 0 0 0 20 0v-78" stroke="#bbb6a0" stroke-width="4" transform="rotate(35 1240 830)"/>
+ <g transform="rotate(-7 780 300)"><rect x="600" y="80" width="155" height="200" fill="#e0d3b7"/><path d="m620 240 50-130 60 130zM630 250h94" stroke="#7d785f" stroke-width="1"/><text x="615" y="99" font-family="Arial" font-size="7" fill="#7d785f">OBJECT STUDY — 01</text></g>
+</g>
+<rect width="1600" height="1100" opacity=".4" filter="url(#grain)"/>
+</svg>

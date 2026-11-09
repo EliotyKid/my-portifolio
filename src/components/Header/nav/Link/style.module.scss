@@ -1,14 +1,19 @@
-.link{
-    position: relative;
-    display: flex;
-    align-items: center;
-    
-    .indicator{
-        width: 10px;
-        height: 10px;
-        background-color: white;
-        border-radius: 50%;
-        position: absolute;
-        left: -30px;
-    }
+.link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  a {
+    display: block;
+    width: 100%;
+    padding-right: 28px;
+  }
+}
+.indicator {
+  width: 9px;
+  height: 9px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  right: 0;
+  pointer-events: none;
 }

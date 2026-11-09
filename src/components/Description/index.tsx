@@ -1,42 +1,48 @@
-import styles from "./style.module.scss";
-import { useInView, motion } from "framer-motion";
-import { useRef } from "react";
-import { slideUp, opacity } from "./animation";
-import Rounded from "../../common/RoundedButton";
-export default function index() {
-  const phrase =
-    "Helping brands to stand out in the digital era. Together we will set the new status quo. No nonsense, always on the cutting edge.";
-  const description = useRef(null);
-  const isInView = useInView(description);
+"use client";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Link from "next/link";
+import { useLayoutEffect, useRef } from "react";
+import Magnetic from "@/common/Magnetic";
+import ScrollArrow from "@/common/ScrollArrow";
+import { copy, type Language, localizedHref } from "@/lib/i18n";
+export default function Description({ lang }: { lang: Language }) {
+  const t = copy[lang];
+  const container = useRef<HTMLElement>(null);
+  useLayoutEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    const media = gsap.matchMedia();
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      const context = gsap.context(() => {
+        gsap.from(".intro-title, .intro-aside", {
+          y: 35,
+          opacity: 0,
+          duration: 0.8,
+          stagger: 0.12,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: container.current,
+            start: "top 88%",
+            once: true,
+          },
+        });
+      }, container);
+      return () => context.revert();
+    });
+    return () => media.revert();
+  }, []);
   return (
-    <div ref={description} className={styles.description}>
-      <div className={styles.body}>
-        <p>
-          {phrase.split(" ").map((word, index) => {
-            return (
-              <span key={index} className={styles.mask}>
-                <motion.span
-                  variants={slideUp}
-                  custom={index}
-                  animate={isInView ? "open" : "closed"}
-                  key={index}
-                >
-                  {word}
-                </motion.span>
-              </span>
-            );
-          })}
-        </p>
-        <motion.p variants={opacity} animate={isInView ? "open" : "closed"}>
-          The combination of my passion for design, code & interaction positions
-          me in a unique place in the web design world.
-        </motion.p>
-        <div data-scroll data-scroll-speed={0.1}>
-          <Rounded className={styles.button}>
-            <p>About me</p>
-          </Rounded>
-        </div>
+    <section ref={container} className="intro section-shell">
+      <h2 className="intro-title">{t.intro}</h2>
+      <div className="intro-aside">
+        <p>{t.introBody}</p>
+        <Magnetic>
+          <Link className="circle-link" href={localizedHref("/about", lang)}>
+            {t.aboutMe}
+            <ScrollArrow />
+          </Link>
+        </Magnetic>
       </div>
-    </div>
+    </section>
   );
 }

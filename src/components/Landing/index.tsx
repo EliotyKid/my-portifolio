@@ -1,76 +1,121 @@
 "use client";
-import Image from "next/image";
-import styles from "./style.module.scss";
-import { useRef, useLayoutEffect } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/all";
-import { slideUp } from "./animation";
-import { motion } from "framer-motion";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
+import Link from "next/link";
+import { useLayoutEffect, useRef, useState } from "react";
+import ScrollArrow from "@/common/ScrollArrow";
+import { copy, type Language, localizedHref } from "@/lib/i18n";
 
-export default function Home() {
-  const firstText = useRef(null);
-  const secondText = useRef(null);
-  const slider = useRef(null);
-  let xPercent = 0;
-  let direction = -1;
-
+export default function Landing({ lang }: { lang: Language }) {
+  const container = useRef<HTMLElement>(null);
+  const t = copy[lang];
+  const marquee = useRef<gsap.core.Tween | null>(null);
+  const [paused, setPaused] = useState(false);
   useLayoutEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
-    gsap.to(slider.current, {
-      scrollTrigger: {
-        trigger: document.documentElement,
-        scrub: 0.25,
-        start: 0,
-        end: window.innerHeight,
-        onUpdate: (e) => (direction = e.direction * -1),
-      },
-      x: "-500px",
+    const media = gsap.matchMedia();
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      const context = gsap.context(() => {
+        gsap.fromTo(
+          ".hero-portrait",
+          { yPercent: 0 },
+          {
+            yPercent: 12,
+            ease: "none",
+            scrollTrigger: {
+              trigger: container.current,
+              start: "top top",
+              end: "bottom top",
+              scrub: true,
+            },
+          },
+        );
+        marquee.current = gsap.to(".hero-marquee-track", {
+          xPercent: -50,
+          duration: 30,
+          ease: "none",
+          repeat: -1,
+        });
+        gsap.from(".hero-info", {
+          y: 32,
+          opacity: 0,
+          duration: 0.9,
+          delay: 0.45,
+          clearProps: "all",
+        });
+      }, container);
+      return () => context.revert();
     });
-    requestAnimationFrame(animate);
+    return () => media.revert();
   }, []);
-
-  const animate = () => {
-    if (xPercent < -100) {
-      xPercent = 0;
-    } else if (xPercent > 0) {
-      xPercent = -100;
-    }
-    gsap.set(firstText.current, { xPercent: xPercent });
-    gsap.set(secondText.current, { xPercent: xPercent });
-    requestAnimationFrame(animate);
-    xPercent += 0.1 * direction;
-  };
-
   return (
-    <motion.main
-      variants={slideUp}
-      initial="initial"
-      animate="enter"
-      className={styles.landing}
-    >
-      <Image src="/images/eu.png" fill={true} alt="background" />
-      <div className={styles.sliderContainer}>
-        <div ref={slider} className={styles.slider}>
-          <p ref={firstText}>Freelance Game Developer -</p>
-          <p ref={secondText}>Freelance Game Developer -</p>
+    <section ref={container} className="hero" aria-label={t.role}>
+      <div className="hero-portrait">
+        <Image
+          src="/images/eu.jpg"
+          alt="Elias Rodrigues"
+          fill
+          priority
+          sizes="100vw"
+        />
+      </div>
+      <div className="hero-shade" />
+      <div className="hero-location">
+        <span>{t.based}</span>
+        <span className="globe" aria-hidden="true">
+          ◎
+        </span>
+      </div>
+      <div className="hero-info">
+        <ScrollArrow className="hero-arrow" direction="down-right" />
+        <p>
+          {t.freelance}
+          <br />
+          {t.role}
+        </p>
+        <Link href={localizedHref("/work", lang)}>
+          {t.recent}
+          <ScrollArrow />
+        </Link>
+      </div>
+      <h1 className="sr-only">Elias Rodrigues — {t.role}</h1>
+      <div className="hero-marquee" aria-hidden="true">
+        <div className="hero-marquee-track">
+          <span>Elias Rodrigues —&nbsp;</span>
+          <span>Elias Rodrigues —&nbsp;</span>
         </div>
       </div>
-      <div data-scroll data-scroll-speed={0.1} className={styles.description}>
-        <svg
-          width="9"
-          height="9"
-          viewBox="0 0 9 9"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+      <div className="hero-bottom">
+        <span>
+          {lang === "pt"
+            ? "Desenvolvimento criativo & interação"
+            : "Creative development & interaction"}
+        </span>
+        <button
+          className="motion-toggle"
+          type="button"
+          aria-pressed={paused}
+          aria-label={
+            lang === "pt"
+              ? paused
+                ? "Retomar letreiro"
+                : "Pausar letreiro"
+              : paused
+                ? "Resume marquee"
+                : "Pause marquee"
+          }
+          onClick={() => {
+            marquee.current?.paused(!paused);
+            setPaused(!paused);
+          }}
         >
-          <path
-            d="M8 8.5C8.27614 8.5 8.5 8.27614 8.5 8L8.5 3.5C8.5 3.22386 8.27614 3 8 3C7.72386 3 7.5 3.22386 7.5 3.5V7.5H3.5C3.22386 7.5 3 7.72386 3 8C3 8.27614 3.22386 8.5 3.5 8.5L8 8.5ZM0.646447 1.35355L7.64645 8.35355L8.35355 7.64645L1.35355 0.646447L0.646447 1.35355Z"
-            fill="white"
-          />
-        </svg>
-        <p>Freelance</p>
-        <p>Game Designer & Developer</p>
+          <span aria-hidden="true">{paused ? "▷" : "Ⅱ"}</span>
+        </button>
+        <a href="#selected-work" aria-label={t.recent}>
+          <ScrollArrow direction="down" />
+        </a>
       </div>
-    </motion.main>
+    </section>
   );
 }

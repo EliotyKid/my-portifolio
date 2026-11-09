@@ -1,14 +1,22 @@
-import styles from "./style.module.scss";
-
-export const metadata = {
-  title: "Creative Developer | Interactive Experiences",
-  description: "Crafting premium digital experiences, immersive 3D interfaces, and high-end motion design.",
-};
-
-export default function WebDevPage() {
+import WorkListing from "@/components/WorkListing";
+import { copy, languageFrom, type SearchParams } from "@/lib/i18n";
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const lang = languageFrom((await searchParams).lang);
+  return { title: copy[lang].web, description: copy[lang].webBody };
+}
+export default async function WebDevPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
   return (
-    <main >
-
-    </main>
+    <WorkListing
+      lang={languageFrom((await searchParams).lang)}
+      category="web"
+    />
   );
 }

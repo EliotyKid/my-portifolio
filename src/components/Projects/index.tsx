@@ -1,201 +1,153 @@
 "use client";
-
-import styles from "./style.module.scss";
-import { useState, useEffect, useRef } from "react";
-import Project from "./components/project";
-import { motion, Variants } from "framer-motion";
 import gsap from "gsap";
 import Image from "next/image";
-import Rounded from "../../common/RoundedButton";
-import {projects} from "@/Data/Projects"
+import Link from "next/link";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import ScrollArrow from "@/common/ScrollArrow";
+import { type ProjectType, projects } from "@/Data/Projects";
+import { copy, type Language, localizedHref } from "@/lib/i18n";
 
-
-const scaleAnimation: Variants = {
-  initial: { scale: 0, x: "-50%", y: "-50%" },
-  enter: {
-    scale: 1,
-    x: "-50%",
-    y: "-50%",
-    transition: { duration: 0.4, ease: [0.76, 0, 0.24, 1] },
-  },
-  closed: {
-    scale: 0,
-    x: "-50%",
-    y: "-50%",
-    transition: { duration: 0.4, ease: [0.32, 0, 0.67, 0] },
-  },
-};
-
-type ModalState = {
-  active: boolean;
-  index: number;
-};
-
-export default function Home() {
-  const [modal, setModal] = useState<ModalState>({ active: false, index: 0 });
-  const { active, index } = modal;
-
-  const modalContainer = useRef<HTMLDivElement | null>(null);
-  const cursor = useRef<HTMLDivElement | null>(null);
-  const cursorLabel = useRef<HTMLDivElement | null>(null);
-
-  // funções do gsap.quickTo
-  const xMoveContainer = useRef<((value: number) => void) | null>(null);
-  const yMoveContainer = useRef<((value: number) => void) | null>(null);
-  const xMoveCursor = useRef<((value: number) => void) | null>(null);
-  const yMoveCursor = useRef<((value: number) => void) | null>(null);
-  const xMoveCursorLabel = useRef<((value: number) => void) | null>(null);
-  const yMoveCursorLabel = useRef<((value: number) => void) | null>(null);
-
+export default function Projects({
+  lang = "pt",
+  items = projects,
+  heading = true,
+  showViewToggle = false,
+}: {
+  lang?: Language;
+  items?: ProjectType[];
+  heading?: boolean;
+  showViewToggle?: boolean;
+}) {
+  const [active, setActive] = useState<ProjectType | null>(null);
+  const [view, setView] = useState<"list" | "grid">("list");
+  const preview = useRef<HTMLDivElement>(null);
+  const move = useRef<{
+    x: (value: number) => void;
+    y: (value: number) => void;
+  } | null>(null);
+  const t = copy[lang];
   useEffect(() => {
-    if (!modalContainer.current || !cursor.current || !cursorLabel.current)
+    if (
+      !preview.current ||
+      !matchMedia(
+        "(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
+      ).matches
+    )
       return;
-
-    // Move Container
-    xMoveContainer.current = gsap.quickTo(modalContainer.current, "left", {
-      duration: 0.8,
-      ease: "power3",
-    });
-    yMoveContainer.current = gsap.quickTo(modalContainer.current, "top", {
-      duration: 0.8,
-      ease: "power3",
-    });
-
-    // Move cursor
-    xMoveCursor.current = gsap.quickTo(cursor.current, "left", {
-      duration: 0.5,
-      ease: "power3",
-    });
-    yMoveCursor.current = gsap.quickTo(cursor.current, "top", {
-      duration: 0.5,
-      ease: "power3",
-    });
-
-    // Move cursor label
-    xMoveCursorLabel.current = gsap.quickTo(cursorLabel.current, "left", {
-      duration: 0.45,
-      ease: "power3",
-    });
-    yMoveCursorLabel.current = gsap.quickTo(cursorLabel.current, "top", {
-      duration: 0.45,
-      ease: "power3",
-    });
+    const element = preview.current;
+    const x = gsap.quickTo(element, "x", { duration: 0.45, ease: "power3" });
+    const y = gsap.quickTo(element, "y", { duration: 0.45, ease: "power3" });
+    move.current = { x, y };
+    return () => {
+      x.tween.kill();
+      y.tween.kill();
+      move.current = null;
+    };
   }, []);
-
-  const moveItems = (x: number, y: number) => {
-    xMoveContainer.current?.(x);
-    yMoveContainer.current?.(y);
-    xMoveCursor.current?.(x);
-    yMoveCursor.current?.(y);
-    xMoveCursorLabel.current?.(x);
-    yMoveCursorLabel.current?.(y);
-  };
-
-  const manageModal = (
-    active: boolean,
-    index: number,
-    x: number,
-    y: number,
-  ) => {
-    moveItems(x, y);
-    setModal({ active, index });
-  };
-
-  const gridContainerVariants: Variants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15, // Tempo entre o surgimento de cada card
-      },
-    },
-  };
-
-  // Variantes para cada Card do projeto
-  const cardVariants: Variants = {
-    hidden: { opacity: 0, y: 50 },
-    show: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { duration: 0.6, ease: [0.215, 0.610, 0.355, 1] } 
-    },
-  };
-
   return (
-    <>
-      <section
-        onMouseMove={(e: React.MouseEvent<HTMLDivElement>) =>
-          moveItems(e.clientX, e.clientY)
-        }
-        className={styles.projects}
-      >
-        <div className={styles.body}>
-          {projects.map((project, i) => (
-            <Project
-              key={i}
-              index={i}
-              title={project.title}
-              category={project.category}
-              manageModal={manageModal}
-            />
+    <section className="project-section section-shell" id="selected-work">
+      {heading && (
+        <div className="section-heading">
+          <h2 className="eyebrow">{t.recent}</h2>
+          <span className="eyebrow">01 — 0{items.length}</span>
+        </div>
+      )}
+      {showViewToggle && (
+        <div
+          className="project-view-toggle"
+          role="group"
+          aria-label={lang === "pt" ? "Visualização dos projetos" : "Project view"}
+        >
+          {(["list", "grid"] as const).map((mode) => (
+            <button
+              key={mode}
+              type="button"
+              aria-pressed={view === mode}
+              onClick={() => setView(mode)}
+            >
+              {mode === "list"
+                ? lang === "pt"
+                  ? "Lista"
+                  : "List"
+                : lang === "pt"
+                  ? "Grade"
+                  : "Grid"}
+            </button>
           ))}
         </div>
-
-        <Rounded>
-          <p>More work</p>
-        </Rounded>
-
-        <>
-          <motion.div
-            ref={modalContainer}
-            variants={scaleAnimation}
-            initial="initial"
-            animate={active ? "enter" : "closed"}
-            className={styles.modalContainer}
+      )}
+      <div
+        className={`project-list${view === "grid" ? " is-grid" : ""}`}
+        onPointerLeave={() => setActive(null)}
+      >
+        {items.map((project, index) => (
+          <Link
+            className="project-row"
+            key={project.slug}
+            href={localizedHref(`/work/${project.slug}`, lang)}
+            onPointerEnter={(event) => {
+              if (event.pointerType !== "mouse" || !move.current) return;
+              move.current.x(event.clientX);
+              move.current.y(event.clientY);
+              setActive(project);
+            }}
+            onPointerMove={(event) => {
+              move.current?.x(event.clientX);
+              move.current?.y(event.clientY);
+            }}
+            onBlur={() => setActive(null)}
           >
+            <span className="project-number">0{index + 1}</span>
             <div
-              style={{ top: `${index * -100}%` }}
-              className={styles.modalSlider}
+              className="project-mobile-image"
+              style={{ background: project.color }}
             >
-              {projects.map((project, i) => {
-                const { src, color } = project;
-                return (
-                  <div
-                    className={styles.modal}
-                    style={{ backgroundColor: color }}
-                    key={`modal_${i}`}
-                  >
-                    <Image
-                      src={`/images/${src}`}
-                      width={300}
-                      height={0}
-                      alt="image"
-                    />
-                  </div>
-                );
-              })}
+              <Image
+                src={project.cover}
+                alt=""
+                width={960}
+                height={640}
+                sizes="(max-width: 760px) 90vw, 1px"
+              />
             </div>
-          </motion.div>
-
-          <motion.div
-            ref={cursor}
-            className={styles.cursor}
-            variants={scaleAnimation}
-            initial="initial"
-            animate={active ? "enter" : "closed"}
-          />
-
-          <motion.div
-            ref={cursorLabel}
-            className={styles.cursorLabel}
-            variants={scaleAnimation}
-            initial="initial"
-            animate={active ? "enter" : "closed"}
-          >
-            View
-          </motion.div>
-        </>
-      </section>
-    </>
+            <div className="project-name">
+              <h3>{project.title}</h3>
+              <p>{project.summary[lang]}</p>
+            </div>
+            <span className="project-category">
+              {project.category === "Web Development" ? t.web : t.games}
+            </span>
+            <ScrollArrow className="project-arrow" />
+          </Link>
+        ))}
+      </div>
+      <div
+        ref={preview}
+        className={`project-preview ${active ? "is-active" : ""}`}
+        aria-hidden="true"
+      >
+        {active && (
+          <>
+            <AnimatePresence initial={false}>
+              <motion.div
+                key={active.slug}
+                className="preview-image"
+                style={{ background: active.color }}
+                initial={{ y: "100%" }}
+                animate={{ y: "0%" }}
+                exit={{ y: "-100%" }}
+                transition={{ duration: 0.45, ease: [0.76, 0, 0.24, 1] }}
+              >
+                <Image src={active.cover} alt="" width={720} height={480} />
+              </motion.div>
+            </AnimatePresence>
+            <span>
+              {t.view} <ScrollArrow />
+            </span>
+          </>
+        )}
+      </div>
+    </section>
   );
 }

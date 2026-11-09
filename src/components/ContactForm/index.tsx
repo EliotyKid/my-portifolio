@@ -1,5 +1,6 @@
 "use client";
 import { type FormEvent, useId, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import ScrollArrow from "@/common/ScrollArrow";
 import type { Language } from "@/lib/i18n";
 
@@ -13,7 +14,9 @@ const messages = {
     messageHint: "Conte um pouco sobre seu projeto…",
     send: "Enviar mensagem",
     pending: "Enviando…",
-    success: "Mensagem enviada! Obrigado pelo contato.",
+    success: "Mensagem enviada!",
+    successDetail: "Obrigado pelo contato. Vou responder no e-mail informado.",
+    sendAnother: "Enviar outra mensagem",
     error: "Não foi possível enviar. Tente novamente em alguns instantes.",
     limited: "Muitas tentativas. Aguarde 15 minutos antes de tentar novamente.",
     invalid:
@@ -29,7 +32,10 @@ const messages = {
     messageHint: "Tell me a little about your project…",
     send: "Send message",
     pending: "Sending…",
-    success: "Message sent! Thank you for getting in touch.",
+    success: "Message sent!",
+    successDetail:
+      "Thank you for getting in touch. I'll reply to the email you provided.",
+    sendAnother: "Send another message",
     error: "Your message could not be sent. Please try again in a moment.",
     limited: "Too many attempts. Please wait 15 minutes before trying again.",
     invalid:
@@ -97,65 +103,96 @@ export default function ContactForm({ lang }: { lang: Language }) {
           autoComplete="off"
         />
       </div>
-      <div className="form-field">
-        <label htmlFor={`${id}-name`}>
-          <span>01</span>
-          {t.name}
-        </label>
-        <input
-          id={`${id}-name`}
-          name="name"
-          placeholder={t.nameHint}
-          autoComplete="name"
-          required
-          minLength={2}
-          maxLength={100}
-        />
+      <div hidden={state === "success"}>
+        <div className="form-field">
+          <label htmlFor={`${id}-name`}>
+            <span>01</span>
+            {t.name}
+          </label>
+          <input
+            id={`${id}-name`}
+            name="name"
+            placeholder={t.nameHint}
+            autoComplete="name"
+            required
+            minLength={2}
+            maxLength={100}
+          />
+        </div>
+        <div className="form-field">
+          <label htmlFor={`${id}-email`}>
+            <span>02</span>
+            {t.email}
+          </label>
+          <input
+            id={`${id}-email`}
+            name="email"
+            type="email"
+            placeholder={t.emailHint}
+            autoComplete="email"
+            required
+            maxLength={254}
+          />
+        </div>
+        <div className="form-field">
+          <label htmlFor={`${id}-message`}>
+            <span>03</span>
+            {t.message}
+          </label>
+          <textarea
+            id={`${id}-message`}
+            name="message"
+            placeholder={t.messageHint}
+            required
+            minLength={10}
+            maxLength={5000}
+            rows={5}
+          />
+        </div>
+        <button
+          className="circle-link form-submit"
+          type="submit"
+          disabled={state === "pending"}
+        >
+          <span className="circle-label">
+            {state === "pending" ? t.pending : t.send}
+          </span>
+          <ScrollArrow />
+        </button>
       </div>
-      <div className="form-field">
-        <label htmlFor={`${id}-email`}>
-          <span>02</span>
-          {t.email}
-        </label>
-        <input
-          id={`${id}-email`}
-          name="email"
-          type="email"
-          placeholder={t.emailHint}
-          autoComplete="email"
-          required
-          maxLength={254}
-        />
-      </div>
-      <div className="form-field">
-        <label htmlFor={`${id}-message`}>
-          <span>03</span>
-          {t.message}
-        </label>
-        <textarea
-          id={`${id}-message`}
-          name="message"
-          placeholder={t.messageHint}
-          required
-          minLength={10}
-          maxLength={5000}
-          rows={5}
-        />
-      </div>
-      <button
-        className="circle-link form-submit"
-        type="submit"
-        disabled={state === "pending"}
-      >
-        <span className="circle-label">
-          {state === "pending" ? t.pending : t.send}
-        </span>
-        <ScrollArrow />
-      </button>
       <output className="form-status" aria-live="polite" data-state={state}>
+        {state === "success" && (
+          <svg
+            className="form-success-icon"
+            viewBox="0 0 52 52"
+            aria-hidden="true"
+          >
+            <circle cx="26" cy="26" r="24" pathLength={1} />
+            <path d="M15 27l8 8 15-17" pathLength={1} />
+          </svg>
+        )}
         {status}
+        {state === "success" && <small>{t.successDetail}</small>}
       </output>
-      <p className="form-privacy">{t.privacy}</p>
+      {state === "success" ? (
+        <button
+          className="form-success-reset"
+          type="button"
+          // Keeps keyboard focus in place when the submit button is hidden.
+          ref={(button) => button?.focus()}
+          onClick={() => {
+            flushSync(() => {
+              setState("idle");
+              setStatus("");
+            });
+            document.getElementById(`${id}-name`)?.focus();
+          }}
+        >
+          {t.sendAnother}
+        </button>
+      ) : (
+        <p className="form-privacy">{t.privacy}</p>
+      )}
     </form>
   );
 }

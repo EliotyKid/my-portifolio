@@ -57,7 +57,9 @@ export default function Projects({
         <div
           className="project-view-toggle"
           role="group"
-          aria-label={lang === "pt" ? "Visualização dos projetos" : "Project view"}
+          aria-label={
+            lang === "pt" ? "Visualização dos projetos" : "Project view"
+          }
         >
           {(["list", "grid"] as const).map((mode) => (
             <button
@@ -129,19 +131,21 @@ export default function Projects({
       >
         {active && (
           <>
-            <AnimatePresence initial={false}>
-              <motion.div
-                key={active.slug}
-                className="preview-image"
-                style={{ background: active.color }}
-                initial={{ y: "100%" }}
-                animate={{ y: "0%" }}
-                exit={{ y: "-100%" }}
-                transition={{ duration: 0.45, ease: [0.76, 0, 0.24, 1] }}
-              >
-                <Image src={active.cover} alt="" width={720} height={480} />
-              </motion.div>
-            </AnimatePresence>
+            <div className="preview-mask">
+              <AnimatePresence initial={false}>
+                <motion.div
+                  key={active.slug}
+                  className="preview-image"
+                  style={{ background: active.color }}
+                  initial={{ y: "100%" }}
+                  animate={{ y: "0%" }}
+                  exit={{ y: "-100%" }}
+                  transition={{ duration: 0.45, ease: [0.76, 0, 0.24, 1] }}
+                >
+                  <Image src={active.cover} alt="" width={720} height={480} />
+                </motion.div>
+              </AnimatePresence>
+            </div>
             <span>
               {t.view} <ScrollArrow />
             </span>

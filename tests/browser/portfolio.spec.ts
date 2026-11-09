@@ -196,7 +196,26 @@ test("form preserves values on failure, prevents duplicate pending sends and con
   await page.getByRole("button", { name: /Send message/ }).click();
   await expect(page.getByRole("button", { name: /Sending/ })).toBeDisabled();
   await expect(page.getByRole("status")).toContainText("Message sent!");
+  await expect(page.locator(".form-success-icon")).toBeVisible();
   await expect(page.getByLabel("What is your name?")).toHaveValue("");
+  await expect(page.getByLabel("What is your name?")).toBeHidden();
+  await page.getByRole("button", { name: "Send another message" }).click();
+  await expect(page.getByLabel("What is your name?")).toBeFocused();
+  await expect(page.locator(".form-success-icon")).toHaveCount(0);
+});
+
+test("project preview slides inside a fixed mask", async ({ page }) => {
+  await page.goto("/work");
+  const rows = page.locator(".project-row");
+  await rows.nth(0).hover();
+  const mask = page.locator(".preview-mask");
+  await expect(mask).toBeVisible();
+  await expect(mask).toHaveCSS("overflow", "hidden");
+  await expect(mask).toHaveCSS("width", "380px");
+  await expect(mask).toHaveCSS("height", "280px");
+  await rows.nth(1).hover();
+  await expect(mask.locator(".preview-image")).toHaveCount(2);
+  await expect(mask.locator(".preview-image")).toHaveCount(1);
 });
 
 for (const slug of slugs) {
